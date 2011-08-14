@@ -16,7 +16,7 @@
 		<library-path append="true">
 			<path-element>../../../libs/FlexUnit4.swc</path-element>
 			<path-element>../../../libs/FlexUnit4CIListener.swc</path-element>
-			<path-element>../../../libs/FlexUnit4UIRunner.swc</path-element>
+			<path-element>../../../libs/flexUnit4UIRunner.swc</path-element>
 			<path-element>../../../libs/mock4as.swc</path-element>
 		</library-path>
 		
