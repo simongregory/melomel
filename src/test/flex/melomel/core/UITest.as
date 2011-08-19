@@ -415,6 +415,14 @@ public class UITest
 		var items:Array = UI.findAll(NativeMenuItem, sandbox);
 		Assert.assertTrue(items.length > 5);
 	}
+	
+	[Test]
+	public function shouldFindSpecificNativeMenuItem():void
+	{
+		var items:Array = UI.findAll(NativeMenuItem, sandbox, {label:"About adl"});
+		Assert.assertEquals(1, items.length);
+		Assert.assertTrue(items[0] is NativeMenuItem);
+	}
 }
 
 }

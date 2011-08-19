@@ -167,7 +167,7 @@ public class UI
 		{
 			if (item == NativeMenuItem)
 			{
-				found = found.concat(_searchAllNatives());
+				found = found.concat(_searchAllNatives(properties));
 				break;
 			}
 		}
@@ -175,31 +175,31 @@ public class UI
 		return found;
 	}
 	
-	static private function _searchAllNatives():Array
+	static private function _searchAllNatives(properties:Object):Array
 	{
 		var items:Array = [];
 		
 		if (NativeApplication.supportsMenu)
 		{
-			items = items.concat(_findNatives(NativeApplication.nativeApplication.menu));
+			items = items.concat(_findNatives(NativeApplication.nativeApplication.menu, properties));
 		}
 		
 		if (NativeApplication.supportsDockIcon)
 		{
 			var dockMenu:NativeMenu = DockIcon(NativeApplication.nativeApplication.icon).menu;
-			if(dockMenu) items = items.concat(_findNatives(dockMenu));
+			if(dockMenu) items = items.concat(_findNatives(dockMenu, properties));
 		}
 		
 		if (NativeApplication.supportsSystemTrayIcon)
 		{
 			var trayMenu:NativeMenu = SystemTrayIcon(NativeApplication.nativeApplication.icon).menu;
-			if (trayMenu) items = items.concat(_findNatives(trayMenu));
+			if (trayMenu) items = items.concat(_findNatives(trayMenu, properties));
 		}
 
 		return items;	
 	}
 
-	static private function _findNatives(root:NativeMenu):Array
+	static private function _findNatives(root:NativeMenu, properties:Object):Array
 	{
 		var menuItems:Array = [];
 		
@@ -207,15 +207,30 @@ public class UI
 		for(var i:int=0; i<root.numItems; i++)
 		{
 			var child:NativeMenuItem = root.getItemAt(i);
-			menuItems.push(child);
+			var match:Boolean = true;
 			
+			if (properties) match = _hasProperty(child,properties);
+			if (match) menuItems.push(child);
+
 			// If matching descendants are found then append to list
 			var childItems:Array = [];
-			if (child.submenu) childItems = _findNatives(child.submenu);
+			if (child.submenu) childItems = _findNatives(child.submenu, properties);
 			if (childItems.length) menuItems = menuItems.concat(childItems);
 		}
 		
 		return menuItems;
+	}
+	
+	private static function _hasProperty(object:Object,properties:Object):Boolean
+	{
+		var match:Boolean = true;
+		for(var propName:String in properties) {
+			if(!object.hasOwnProperty(propName) || object[propName] != properties[propName]) {
+				match = false;
+				break;
+			}
+		}
+		return match;
 	}
 
 	static private function _findAll(classes:Array, root:DisplayObject,
@@ -233,15 +248,7 @@ public class UI
 				match = true;
 				
 				if(properties) {
-					// Match display object on properties
-					for(var propName:String in properties) {
-						if(!root.hasOwnProperty(propName) ||
-						   root[propName] != properties[propName])
-						{
-							match = false;
-							break;
-						}
-					}
+					match = _hasProperty(root,properties);
 				}
 			}
 			
