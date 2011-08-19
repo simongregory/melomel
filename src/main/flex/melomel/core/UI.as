@@ -26,6 +26,8 @@ import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
 import flash.text.TextField;
 import flash.utils.getDefinitionByName;
+import flash.desktop.DockIcon;
+import flash.desktop.SystemTrayIcon;
 
 /**
  *	This class provides user interface related utility methods for finding
@@ -165,12 +167,36 @@ public class UI
 		{
 			if (item == NativeMenuItem)
 			{
-				found = found.concat(_findNatives(NativeApplication.nativeApplication.menu));
+				found = found.concat(_searchAllNatives());
 				break;
 			}
 		}
 		
 		return found;
+	}
+	
+	static private function _searchAllNatives():Array
+	{
+		var items:Array = [];
+		
+		if (NativeApplication.supportsMenu)
+		{
+			items = items.concat(_findNatives(NativeApplication.nativeApplication.menu));
+		}
+		
+		if (NativeApplication.supportsDockIcon)
+		{
+			var dockMenu:NativeMenu = DockIcon(NativeApplication.nativeApplication.icon).menu;
+			if(dockMenu) items = items.concat(_findNatives(dockMenu));
+		}
+		
+		if (NativeApplication.supportsSystemTrayIcon)
+		{
+			var trayMenu:NativeMenu = SystemTrayIcon(NativeApplication.nativeApplication.icon).menu;
+			if (trayMenu) items = items.concat(_findNatives(trayMenu));
+		}
+
+		return items;	
 	}
 
 	static private function _findNatives(root:NativeMenu):Array
