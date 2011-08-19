@@ -26,6 +26,7 @@ import flash.desktop.NativeApplication;
 import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
 import flash.ui.Keyboard;
+import flash.display.NativeMenuItem;
 
 public class UITest
 {

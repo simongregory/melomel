@@ -56,6 +56,7 @@
 		<!-- Bridge -->
 		<java jar="${mxmlc.jar}" fork="true" failonerror="true">
 			<arg value="+flexlib=${FLEX_HOME}/frameworks"/>
+			<arg value="+configname=air"/>
 			<arg value="-load-config+=${src.dir}/test/resources/BridgeRunner-config.xml"/>
 			<arg value="${src.dir}/test/flex/BridgeRunner.mxml"/>
 		</java>

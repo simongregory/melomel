@@ -15,9 +15,12 @@ import melomel.errors.MelomelError;
 
 import mx.containers.TabNavigator;
 
+import flash.desktop.NativeApplication;
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;
 import flash.display.InteractiveObject;
+import flash.display.NativeMenu;
+import flash.display.NativeMenuItem;
 import flash.events.Event;
 import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
@@ -156,7 +159,37 @@ public class UI
 		}
 
 		count = 0;
-		return _findAll(clazz as Array, root, properties);
+		var found:Array = _findAll(clazz as Array, root, properties);
+		
+		for each (var item:Object in clazz)
+		{
+			if (item == NativeMenuItem)
+			{
+				found = found.concat(_findNatives(NativeApplication.nativeApplication.menu));
+				break;
+			}
+		}
+		
+		return found;
+	}
+
+	static private function _findNatives(root:NativeMenu):Array
+	{
+		var menuItems:Array = [];
+		
+		// Recursively search over menu children
+		for(var i:int=0; i<root.numItems; i++)
+		{
+			var child:NativeMenuItem = root.getItemAt(i);
+			menuItems.push(child);
+			
+			// If matching descendants are found then append to list
+			var childItems:Array = [];
+			if (child.submenu) childItems = _findNatives(child.submenu);
+			if (childItems.length) menuItems = menuItems.concat(childItems);
+		}
+		
+		return menuItems;
 	}
 
 	static private function _findAll(classes:Array, root:DisplayObject,
