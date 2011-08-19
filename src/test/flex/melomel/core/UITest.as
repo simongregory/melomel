@@ -403,5 +403,17 @@ public class UITest
 		Assert.assertEquals("foo", labels[0]);
 		Assert.assertEquals("bar", labels[1]);
 	}
+
+	//---------------------------------------
+	// Native Menu Items
+	//---------------------------------------
+
+	[Test]
+	public function shouldFindNativeMenuItems():void
+	{
+		var items:Array = UI.findAll(NativeMenuItem, sandbox);
+		Assert.assertTrue(items.length > 5);
+	}
 }
+
 }
